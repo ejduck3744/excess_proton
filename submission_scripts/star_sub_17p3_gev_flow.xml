@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE note [
+<!ENTITY listOfFiles "list_of_files.list">
+<!ENTITY dir "/gpfs01/star/pwg/educkwort/excess_proton/17p3_gev">
+]>
+<job fileListSyntax="xrootd" maxFilesPerProcess="25" simulateSubmission="false">
+
+<stdout URL="file:&dir;/log/sched$JOBID.out" />
+ <stderr URL="file:&dir;/log/sched$JOBID.err" />
+
+ <Generator>
+   <Location>&dir;/report/</Location>
+   <ScriptLocation>&dir;/csh/</ScriptLocation>
+   <ListLocation>&dir;/list/</ListLocation>
+ </Generator>
+
+<command>
+starver SL23d
+rm -rf ./StRoot/run
+cp -rf StRoot/run_17p3_gev/ ./StRoot/run
+sed 's/\/\/ TString ep_setting = "flow";/TString ep_setting = "flow";/' ./StRoot/run/run.h > ./StRoot/run/run_temp.h
+mv ./StRoot/run/run_temp.h ./StRoot/run/run.h
+cons
+root4star -q -l -b readPicoDst.C\(\"$FILELIST\",\"${JOBID}_out\"\) &gt;&amp; ${JOBID}_0.log
+ls
+</command>
+<input URL="catalog:star.bnl.gov?filetype=daq_reco_picoDst,trgsetupname~production_17p3GeV_2021,filename~st_physics,production=P23id,storage!=hpss" nFiles="all" />
+<output fromScratch="*.log" toURL="&dir;/log/" />
+<output fromScratch="*_out.root" toURL="&dir;/output/" />
+
+<SandBox installer="ZIP">
+	<Package name="Package_Flow_17p3_gev">
+    <File>file:./StRoot/</File>
+    <File>file:./readPicoDst.C</File>
+    <File>file:./.sl73_gcc485</File>
+	<File>file:./.rootrc</File>
+	</Package>
+</SandBox>
+
+</job>

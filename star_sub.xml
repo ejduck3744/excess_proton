@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE note [
+<!-- <!ENTITY listOfFiles "filelist_3p85gev_trunc.list"> -->
+<!ENTITY listOfFiles "9p2_prelim_2023-01-25.list">
+<!ENTITY dir "/star/u/educkwort/excess_proton/9p2_GeV_2020/flow">
+]>
+
+<job fileListSyntax="xrootd" maxFilesPerProcess="30" simulateSubmission="false">
+
+<stdout URL="file:./log/sched$JOBID.out" />
+ <stderr URL="file:./log/sched$JOBID.err" />
+
+ <Generator>
+   <Location>./report/</Location>
+   <ScriptLocation>./csh/</ScriptLocation>
+   <ListLocation>./list/</ListLocation>
+ </Generator>
+
+<command>
+starver SL19e
+cons
+root4star -q -l -b readPicoDst.C\(\"$FILELIST\",\"${JOBID}_out\"\) &gt;&amp; ${JOBID}_0.log
+
+</command>
+
+<!-- <input URL="filelist:&dir;/&listOfFiles;" nFiles="all"/> -->
+<input URL="catalog:star.bnl.gov?filetype=daq_reco_picoDst,trgsetupname~production_9p2GeV_2020,filename~st_physics,production=P23ia,storage!=hpss" nFiles="all" />
+<output fromScratch="*.log" toURL="&dir;/log/" />
+<output fromScratch="*_out.root" toURL="&dir;/output/" />
+
+<SandBox installer="ZIP">
+	<Package name="Package_Flow_vn_neww">
+    <File>file:./StRoot/</File>
+    <File>file:./readPicoDst.C</File>
+	</Package>
+</SandBox>
+
+</job>
